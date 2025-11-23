@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>彩色背景满屏飘字（优化版）</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+        }
+        .text-box {
+            position: absolute;
+            font-size: 28px; /* 增大字体更醒目 */
+            font-weight: 600;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 8px; /* 圆角更柔和 */
+            padding: 8px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* 加阴影增强层次感 */
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const texts = [
+            "多喝热水~", "保持微笑呀", "每天都要元气满满",
+            "好好吃饭", "保持好心情", "好好爱自己", "我想你了",
+            "梦想成真", "期待下一次见面", "别熬夜", "顺顺利利",
+            "每天都要开开心心的", "愿所有烦恼都消失", "今天过得好开心",
+            "天冷了，多穿衣服", "记得吃水果", "平安喜乐", "万事顺意"
+        ];
+
+        // 丰富彩色背景（增加饱和度，确保文字可读性）
+        const textBgColors = [
+            "rgba(255, 77, 79, 0.85)", "rgba(250, 140, 22, 0.85)", "rgba(250, 219, 20, 0.85)",
+            "rgba(82, 196, 26, 0.85)", "rgba(24, 144, 255, 0.85)", "rgba(114, 46, 209, 0.85)",
+            "rgba(0, 180, 255, 0.85)", "rgba(255, 105, 180, 0.85)", "rgba(147, 112, 219, 0.85)",
+            "rgba(60, 179, 113, 0.85)", "rgba(135, 206, 235, 0.85)", "rgba(255, 192, 203, 0.85)",
+            "rgba(233, 30, 99, 0.85)", "rgba(33, 150, 243, 0.85)", "rgba(76, 175, 80, 0.85)"
+        ];
+
+        // 文字色与背景色精准适配（深色背景配白色，浅色背景配黑色）
+        const textColors = [
+            "#fff", "#fff", "#000", "#fff", "#fff", "#fff",
+            "#fff", "#000", "#fff", "#fff", "#000", "#000",
+            "#fff", "#fff", "#fff"
+        ];
+
+        function createTextBox() {
+            const textBox = document.createElement("div");
+            textBox.className = "text-box";
+            // 随机选取文字和对应配色
+            const textIndex = Math.floor(Math.random() * texts.length);
+            const colorIndex = Math.floor(Math.random() * textBgColors.length);
+            textBox.innerText = texts[textIndex];
+            textBox.style.backgroundColor = textBgColors[colorIndex];
+            textBox.style.color = textColors[colorIndex];
+            // 随机定位（避免文字超出屏幕）
+            textBox.style.left = `${Math.random() * 90}vw`;
+            textBox.style.top = `${Math.random() * 90}vh`;
+            document.body.appendChild(textBox);
+
+            // 淡入效果
+            let opacity = 0;
+            const fadeInInterval = setInterval(() => {
+                opacity += 0.05;
+                textBox.style.opacity = opacity;
+                if (opacity >= 1) clearInterval(fadeInInterval);
+            }, 50);
+
+            // 停留后淡出并移除
+            setTimeout(() => {
+                let fadeOutOpacity = 1;
+                const fadeOutInterval = setInterval(() => {
+                    fadeOutOpacity -= 0.05;
+                    textBox.style.opacity = fadeOutOpacity;
+                    if (fadeOutOpacity <= 0) {
+                        clearInterval(fadeOutInterval);
+                        document.body.removeChild(textBox);
+                    }
+                }, 50);
+            }, 2500 + Math.random() * 2500); // 停留时间更灵活
+        }
+
+        // 调整生成频率，避免文字拥挤
+        setInterval(createTextBox, 400);
+    </script>
+</body>
+</html>
